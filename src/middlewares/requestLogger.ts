@@ -1,5 +1,3 @@
-// src/middlewares/requestLogger.ts
-
 import morgan from 'morgan';
 import logger from '@utils/logger';
 
