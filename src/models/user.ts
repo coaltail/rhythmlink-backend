@@ -1,6 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database";
-
+import bcrypt from "bcrypt";
 class User extends Model {
   public id!: number;
   public username!: string;
@@ -9,7 +9,9 @@ class User extends Model {
   public createdAt!: Date;
   public updatedAt!: Date;
 }
-
+User.beforeCreate(async(user) => {
+  user.password = await bcrypt.hash(user.password, 15);
+})
 User.init(
   {
     id: {
@@ -24,7 +26,10 @@ User.init(
     email: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
+      validate: {
+        isEmail: true
+      }
     },
     password: {
       type: DataTypes.STRING,
