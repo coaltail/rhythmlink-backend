@@ -1,6 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/database";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 export enum MusicGenre {
   ROCK = "Rock",
@@ -27,17 +27,20 @@ export enum Instrument {
   TRUMPET = "Trumpet",
   VOCALS = "Vocals",
 }
+
 export class User extends Model {
   public id!: number;
   public username!: string;
   public email!: string;
   public password!: string;
+  public address!: string;
+  public mainInstrument!: Instrument;
+  public genresOfInterest!: MusicGenre[];  // This should be handled as a JSON or a string column in MySQL
   public createdAt!: Date;
   public updatedAt!: Date;
 }
-User.beforeCreate(async (user) => {
-  user.password = await bcrypt.hash(user.password, 15);
-});
+
+const instruments = Object.values(Instrument);
 
 User.init(
   {
@@ -61,17 +64,23 @@ User.init(
     password: {
       type: DataTypes.STRING,
       allowNull: false,
+      validate: {
+        len: {
+          args: [10, 45],
+          msg: "Password must be at least 10 characters long.",
+        }
+      }
     },
     address: {
       type: DataTypes.STRING,
       allowNull: false,
     },
     mainInstrument: {
-      type: DataTypes.ENUM(...Object.values(Instrument)),
+      type: DataTypes.ENUM(...instruments),
       allowNull: false,
     },
     genresOfInterest: {
-      type: DataTypes.ARRAY(DataTypes.ENUM(...Object.values(MusicGenre))),
+      type: DataTypes.JSON,
       allowNull: false,
     },
     createdAt: {
@@ -87,6 +96,12 @@ User.init(
     sequelize,
     tableName: "users",
     timestamps: true,
+    hooks: {
+      beforeCreate: async (user) => {
+        if (user.password) {
+          user.password = await bcrypt.hash(user.password, 15);
+        }
+      },
+    },
   }
 );
-
