@@ -1,41 +1,65 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import sequelize from "@config/database";
 import cors from "cors";
 import requestLogger from "./middlewares/requestLogger";
 import logger from "@utils/logger";
 import routes from "@routes/index"
+import { generateRandomUser } from "./mock/mockUserData";
+import { checkJwtMiddleware } from "./middlewares/authMiddleware";
+import { IRequestUser } from "@interface/auth";
 dotenv.config();
 
 const PORT = process.env.PORT;
-const serverHost = process.env.HOST
 const server = express();
-
+const NODE_ENV = process.env.NODE_ENV
 server.use(cors());
 server.use(express.json());
 server.use(express.urlencoded({
   extended: true,
 }));
 
+
+if (NODE_ENV == 'dev') {
+  generateRandomUser().then((user) => {
+    console.log("Random user created:", user);
+  }).catch(err => {
+    console.error("Error creating user:", err);
+  });
+}
+
 sequelize
   .sync()
   .then(() => {
     console.log("Database connected and synchronized.");
   })
-  .catch((error) => {
+  .catch((error: unknown) => {
     console.error("Unable to connect to the database:", error);
   });
 
 server.use(requestLogger);
+server.get('/health-check', (_: Request, res: Response) => {
+  res.status(200).json({ message: "Success!" })
+});
+server.use((req: IRequestUser, res: Response, next: NextFunction) => {
+  if (req.url.startsWith('/api/auth/login') || req.url.startsWith('/api/auth/register')) {
+    return next();
+  }
+
+  checkJwtMiddleware(req, res, next);
+});
 
 server.use("/api", routes);
 
 
+server.use("*", async (_, res: Response) => {
+  res.status(404).json({ message: "Endpoint not found." });
+})
 server.listen(PORT, () => {
-  console.log(`Server started on: ${serverHost}:${PORT}`);
+  console.log(`Server started on: http://localhost:${PORT}`);
 });
 
-process.on('uncaughtException', (error) => {
+process.on('uncaughtException', (error: Error) => {
   logger.error(`Uncaught Exception: ${error.message}`);
   process.exit(1);
 });
