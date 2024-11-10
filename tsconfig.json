@@ -20,7 +20,8 @@
             "@models/*": ["src/models/*"],
             "@controllers/*": ["src/controllers/*"],
             "@routes/*": ["src/routes/*"],
-            "@types/*": ["src/types/*"],
+            "@interface/*": ["src/interface/*"],
+            "@common/*": ["src/common/*"],
         }
     },
     "include": [
