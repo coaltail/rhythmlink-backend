@@ -6,7 +6,7 @@ export const validateLoginRequest = [
         .notEmpty().withMessage('Email is required.'),
 
     body('password')
-        .isLength({ min: 40 }).withMessage('Password must be at least 40 characters long.')
+        .isLength({ min: 10 }).withMessage('Password must be at least 10 characters long.')
         .notEmpty().withMessage('Password is required.')
 ];
 
@@ -20,7 +20,7 @@ export const validateRegisterRequest = [
         .notEmpty().withMessage('Username is required.'),
 
     body('password')
-        .isLength({ min: 40 }).withMessage('Password must be at least 40 characters long.')
+        .isLength({ min: 10 }).withMessage('Password must be at least 10 characters long.')
         .notEmpty().withMessage('Password is required.'),
 
     body('address')
