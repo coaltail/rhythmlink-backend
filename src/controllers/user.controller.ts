@@ -4,8 +4,9 @@ import { RegisterRequest, RegisterResponse } from "@interface/user";
 import { registerUserAndGenerateJwt } from "@services/user.service";
 import { ApiError, ApiValidationError } from "@common/errors";
 import { validationResult } from "express-validator";
+import { HttpStatusCode } from "@common/httpStatusCodes";
 export const registerUser = async (req: Request, res: Response) => {
-    try{
+    try {
         const errors = validationResult(req);
 
         if (!errors.isEmpty()) {
@@ -16,7 +17,7 @@ export const registerUser = async (req: Request, res: Response) => {
         const { token, expiry } = await registerUserAndGenerateJwt(registerRequest)
 
         const registerResponse: RegisterResponse = { token, expiry }
-        res.status(201).json(registerResponse);
+        res.status(HttpStatusCode.CREATED).json(registerResponse);
     } catch (error: unknown) {
 
         logger.error("Registration error: ", error);

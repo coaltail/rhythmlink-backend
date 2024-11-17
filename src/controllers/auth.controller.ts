@@ -4,6 +4,7 @@ import { LoginRequest, LoginResponse } from "@interface/auth";
 import { loginUserAndGenerateJwt } from "@services/auth.serivce";
 import { ApiError, ApiValidationError } from "@common/errors";
 import { validationResult } from "express-validator";
+import { HttpStatusCode } from "@common/httpStatusCodes";
 export const loginUser = async (req: Request, res: Response) => {
     try {
         const errors = validationResult(req);
@@ -16,7 +17,7 @@ export const loginUser = async (req: Request, res: Response) => {
         const { token, expiry } = await loginUserAndGenerateJwt(loginRequest)
 
         const loginResponse: LoginResponse = { token, expiry }
-        res.status(200).json(loginResponse);
+        res.status(HttpStatusCode.OK).json(loginResponse);
     } catch (error: unknown) {
 
         logger.error("Login error: ", error);
