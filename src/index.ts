@@ -42,7 +42,7 @@ server.get('/health-check', (_: Request, res: Response) => {
   res.status(200).json({ message: "Success!" })
 });
 server.use((req: IRequestUser, res: Response, next: NextFunction) => {
-  if (req.url.startsWith('/api/auth/login') || req.url.startsWith('/api/auth/register')) {
+  if (req.url.startsWith('/api/auth/login') || req.url.startsWith('/api/users')) {
     return next();
   }
 

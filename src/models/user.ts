@@ -3,29 +3,29 @@ import sequelize from "../config/database";
 import bcrypt from "bcryptjs";
 
 export enum MusicGenre {
-  ROCK = "Rock",
-  JAZZ = "Jazz",
-  CLASSICAL = "Classical",
-  POP = "Pop",
-  HIPHOP = "Hip-Hop",
-  ELECTRONIC = "Electronic",
-  BLUES = "Blues",
-  COUNTRY = "Country",
-  REGGAE = "Reggae",
-  METAL = "Metal",
+  ROCK = "ROCK",
+  JAZZ = "JAZZ",
+  CLASSICAL = "CLASSICAL",
+  POP = "POP",
+  HIPHOP = "HIPHOP",
+  ELECTRONIC = "ELECTRONIC",
+  BLUES = "BLUES",
+  COUNTRY = "COUNTRY",
+  REGGAE = "REGGAE",
+  METAL = "METAL",
 }
 
 export enum Instrument {
-  GUITAR = "Guitar",
-  PIANO = "Piano",
-  DRUMS = "Drums",
-  VIOLIN = "Violin",
-  BASS = "Bass",
-  SAXOPHONE = "Saxophone",
-  FLUTE = "Flute",
-  CELLO = "Cello",
-  TRUMPET = "Trumpet",
-  VOCALS = "Vocals",
+  GUITAR = "GUITAR",
+  PIANO = "PIANO",
+  DRUMS = "DRUMS",
+  VIOLIN = "VIOLIN",
+  BASS = "BASS",
+  SAXOPHONE = "SAXOPHONE",
+  FLUTE = "FLUTE",
+  CELLO = "CELLO",
+  TRUMPET = "TRUMPET",
+  VOCALS = "VOCALS",
 }
 
 export class User extends Model {
