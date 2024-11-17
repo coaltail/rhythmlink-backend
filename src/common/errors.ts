@@ -33,3 +33,9 @@ export class ApiValidationError extends ApiError {
 
     }
 }
+
+export class UserAlreadyExistsError extends ApiError {
+    constructor(message: string = 'User already exists') {
+        super(message, HttpStatusCode.BAD_REQUEST)
+    }
+}
