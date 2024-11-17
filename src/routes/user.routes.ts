@@ -4,6 +4,6 @@ import { validateRegisterRequest } from "@common/validation";
 
 const router = express.Router();
 
-router.post("/register", validateRegisterRequest, userController.registerUser)
+router.post("/", validateRegisterRequest, userController.registerUser)
 
 export default router;

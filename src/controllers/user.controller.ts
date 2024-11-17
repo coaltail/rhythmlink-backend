@@ -16,8 +16,7 @@ export const registerUser = async (req: Request, res: Response) => {
         const { token, expiry } = await registerUserAndGenerateJwt(registerRequest)
 
         const registerResponse: RegisterResponse = { token, expiry }
-        res.status(200).json(registerResponse);
-
+        res.status(201).json(registerResponse);
     } catch (error: unknown) {
 
         logger.error("Registration error: ", error);

@@ -16,7 +16,7 @@ export const validateRegisterRequest = [
         .notEmpty().withMessage('Email is required.'),
     
     body('username')
-        .isLength({ min: 6 }).withMessage('Password must be at least 6 characters long.')
+        .isLength({ min: 6 }).withMessage('Username must be at least 6 characters long.')
         .notEmpty().withMessage('Username is required.'),
 
     body('password')
@@ -30,5 +30,6 @@ export const validateRegisterRequest = [
         .notEmpty().withMessage('Main instrument is required.'),
 
     body('genresOfInterest')
+        .isArray().withMessage('Please provide genres of interest in the form of an array.')
         .notEmpty().withMessage('Genres of interest are required.')
 ];
