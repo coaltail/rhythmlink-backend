@@ -36,8 +36,6 @@ export const registerUser = async (req: Request, res: Response) => {
 export const getUser = async (req: IRequestUser, res: Response) => {
     try {
 
-        console.log("User:", req.user);
-
         const {username, address, mainInstrument, genresOfInterest} = req.user;
 
         const getUserResponse: GetUserResponse = {username, address, mainInstrument, genresOfInterest};

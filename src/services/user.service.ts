@@ -2,7 +2,7 @@ import { UserAlreadyExistsError } from "@common/errors";
 import { User } from "@models/user";
 import { EditProfileRequest, RegisterRequest } from "@interface/user";
 import { TokenClaims } from "@interface/auth";
-import { signJsonWebToken } from "@services/auth.serivce";
+import { signJsonWebToken } from "@services/auth.service";
 
 export const registerUserAndGenerateJwt = async (
   registerRequest: RegisterRequest
