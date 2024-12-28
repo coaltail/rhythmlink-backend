@@ -23,7 +23,7 @@ export const validateRegisterRequest = [
     body('email')
         .isEmail().withMessage('Please provide a valid email address.')
         .notEmpty().withMessage('Email is required.'),
-    
+
     body('username')
         .isLength({ min: 6 }).withMessage('Username must be at least 6 characters long.')
         .notEmpty().withMessage('Username is required.'),
@@ -40,7 +40,7 @@ export const validateRegisterRequest = [
         .notEmpty().withMessage('Main instrument is required.')
         .custom(value => isValidEnumValue(value, Instrument))
         .withMessage('Invalid main instrument. Must be one of the predefined values.'),
-        
+
 
     body('genresOfInterest')
         .isArray().withMessage('Please provide genres of interest in the form of an array.')

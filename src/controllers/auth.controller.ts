@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import { Request, Response } from "express";
 import { LoginRequest, LoginResponse } from "@interface/auth";
-import { loginUserAndGenerateJwt } from "@services/auth.serivce";
+import { loginUserAndGenerateJwt } from "@services/auth.service";
 import { ApiError, ApiValidationError } from "@common/errors";
 import { validationResult } from "express-validator";
 import { HttpStatusCode } from "@common/httpStatusCodes";
@@ -26,6 +26,7 @@ export const loginUser = async (req: Request, res: Response) => {
                 message: error.message,
                 ...(error instanceof ApiValidationError && { errors: error.errors })
             })
+            return;
         }
         res.status(500).json({ message: "Internal server error" });
 

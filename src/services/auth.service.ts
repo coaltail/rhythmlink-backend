@@ -3,6 +3,7 @@ import { User } from "@models/user";
 import { LoginRequest, TokenClaims } from "@interface/auth";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken"
+import logger from "@utils/logger";
 
 export const loginUserAndGenerateJwt = async (loginRequest: LoginRequest) => {
     const { email, password } = loginRequest;
@@ -37,5 +38,6 @@ export const loginUserAndGenerateJwt = async (loginRequest: LoginRequest) => {
 }
 
 export const signJsonWebToken = (claims: TokenClaims) => {
+    logger.info(`JWT SECRET: ${process.env.JWT_SECRET}`)
     return jwt.sign(claims, process.env.JWT_SECRET, { expiresIn: "24h" })
 }
