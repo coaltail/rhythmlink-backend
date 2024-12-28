@@ -5,14 +5,12 @@ import cors from "cors";
 import requestLogger from "./middlewares/requestLogger";
 import logger from "@utils/logger";
 import routes from "@routes/index"
-import { generateRandomUser } from "./mock/mockUserData";
 import { checkJwtMiddleware } from "./middlewares/authMiddleware";
 import { IRequestUser } from "@interface/auth";
 dotenv.config();
 
 const PORT = process.env.PORT;
 const server = express();
-const NODE_ENV = process.env.NODE_ENV
 server.use(cors());
 server.use(express.json());
 server.use(express.urlencoded({
@@ -22,10 +20,10 @@ server.use(express.urlencoded({
 sequelize
   .sync()
   .then(() => {
-    console.log("Database connected and synchronized.");
+    logger.info("Database connected and synchronized.");
   })
   .catch((error: unknown) => {
-    console.error("Unable to connect to the database:", error);
+    logger.error("Unable to connect to the database:", error);
   });
 
 server.use(requestLogger);
@@ -50,7 +48,7 @@ server.use("*", async (_, res: Response) => {
   res.status(404).json({ message: "Endpoint not found." });
 })
 server.listen(PORT, () => {
-  console.log(`Server started on: http://localhost:${PORT}`);
+  logger.info(`Server started on: http://localhost:${PORT}`);
 });
 
 process.on('uncaughtException', (error: Error) => {

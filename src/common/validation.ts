@@ -23,7 +23,7 @@ export const validateRegisterRequest = [
     body('email')
         .isEmail().withMessage('Please provide a valid email address.')
         .notEmpty().withMessage('Email is required.'),
-    
+
     body('username')
         .isLength({ min: 6 }).withMessage('Username must be at least 6 characters long.')
         .notEmpty().withMessage('Username is required.'),

@@ -49,6 +49,11 @@ export const registerUserAndGenerateJwt = async (
   return { token, expiry };
 };
 
+export const findUserById = async (userId: number) => {
+    const user = await User.findByPk(userId)
+    return user;
+}
+
 export const editUserProfile = async (
   editProfileRequest: EditProfileRequest,
   userId: number
