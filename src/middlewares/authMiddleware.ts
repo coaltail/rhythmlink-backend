@@ -17,6 +17,7 @@ export const checkJwtMiddleware = (req: IRequestUser, res: Response, next: NextF
         }
 
         req.user = decoded as TokenClaims;
+       
         next();
     });
 };

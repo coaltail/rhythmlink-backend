@@ -1,42 +1,73 @@
 import { UserAlreadyExistsError } from "@common/errors";
 import { User } from "@models/user";
-import { RegisterRequest } from "@interface/user";
+import { EditProfileRequest, RegisterRequest } from "@interface/user";
 import { TokenClaims } from "@interface/auth";
-import { signJsonWebToken } from "@services/auth.service"
-export const registerUserAndGenerateJwt = async (registerRequest: RegisterRequest) => {
-    const { email, username, password, address, mainInstrument, genresOfInterest } = registerRequest;
+import { signJsonWebToken } from "@services/auth.service";
 
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-        throw new UserAlreadyExistsError(`User with email ${email} already exists.`);
-    }
+export const registerUserAndGenerateJwt = async (
+  registerRequest: RegisterRequest
+) => {
+  const {
+    email,
+    username,
+    password,
+    address,
+    mainInstrument,
+    genresOfInterest
+  } = registerRequest;
 
-    const newUser = await User.create({
-        email,
-        username,
-        password,
-        address,
-        mainInstrument,
-        genresOfInterest,
-    });
+  const existingUser = await User.findOne({ where: { email } });
+  if (existingUser) {
+    throw new UserAlreadyExistsError(
+      `User with email ${email} already exists.`
+    );
+  }
 
-    const tokenClaims: TokenClaims = {
-        userId: newUser.id,
-        username: newUser.username,
-        address: newUser.address,
-        mainInstrument: newUser.mainInstrument,
-        genresOfInterest: newUser.genresOfInterest,
-        createdAt: newUser.createdAt,
-        updatedAt: newUser.updatedAt,
-    };
+  const newUser = await User.create({
+    email,
+    username,
+    password,
+    address,
+    mainInstrument,
+    genresOfInterest
+  });
 
-    const token = signJsonWebToken(tokenClaims);
-    const expiry = new Date(Date.now() + 3600 * 1000 * 24).toISOString();
+  const tokenClaims: TokenClaims = {
+    userId: newUser.id,
+    username: newUser.username,
+    address: newUser.address,
+    mainInstrument: newUser.mainInstrument,
+    genresOfInterest: newUser.genresOfInterest,
+    createdAt: newUser.createdAt,
+    updatedAt: newUser.updatedAt
+  };
 
-    return { token, expiry };
-}
+  const token = signJsonWebToken(tokenClaims);
+  const expiry = new Date(Date.now() + 3600 * 1000 * 24).toISOString();
+
+  return { token, expiry };
+};
 
 export const findUserById = async (userId: number) => {
     const user = await User.findByPk(userId)
     return user;
 }
+
+export const editUserProfile = async (
+  editProfileRequest: EditProfileRequest,
+  userId: number
+) => {
+  const { username, password, address, mainInstrument, genresOfInterest } =
+    editProfileRequest;
+
+  const existingUser = await User.findByPk(userId);
+
+  const updatedData: Partial<EditProfileRequest> = {};
+  if (username) updatedData.username = username;
+  if (password) updatedData.password = password;
+  if (address) updatedData.address = address;
+  if (mainInstrument) updatedData.mainInstrument = mainInstrument;
+  if (genresOfInterest) updatedData.genresOfInterest = genresOfInterest;
+
+  await existingUser.update(updatedData);
+};
