@@ -8,12 +8,14 @@ export const checkJwtMiddleware = (req: IRequestUser, res: Response, next: NextF
     console.log("Token:", token);
 
     if (!token) {
-        return res.status(HttpStatusCode.UNATHORIZED).json({ message: "No token provided, authorization denied." });
+        res.status(HttpStatusCode.UNATHORIZED).json({ message: "No token provided, authorization denied." });
+        return;
     }
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-            return res.status(HttpStatusCode.FORBIDDEN).json({ message: "Invalid or expired token." });
+            res.status(HttpStatusCode.FORBIDDEN).json({ message: "Invalid or expired token." });
+            return;
         }
 
         console.log("Decoded:", decoded);
