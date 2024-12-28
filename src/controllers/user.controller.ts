@@ -1,10 +1,11 @@
 import logger from "@utils/logger";
 import { Request, Response } from "express";
-import { GetUserRequest, GetUserResponse, RegisterRequest, RegisterResponse } from "@interface/user";
-import { registerUserAndGenerateJwt, getUserFromToken } from "@services/user.service";
+import { GetUserResponse, RegisterRequest, RegisterResponse } from "@interface/user";
+import { registerUserAndGenerateJwt} from "@services/user.service";
 import { ApiError, ApiValidationError } from "@common/errors";
 import { validationResult } from "express-validator";
 import { HttpStatusCode } from "@common/httpStatusCodes";
+import { IRequestUser } from "@interface/auth";
 export const registerUser = async (req: Request, res: Response) => {
     try {
         const errors = validationResult(req);
@@ -32,16 +33,12 @@ export const registerUser = async (req: Request, res: Response) => {
     }
 }
 
-export const getUser = async (req: Request, res: Response) => {
+export const getUser = async (req: IRequestUser, res: Response) => {
     try {
-        const token = req.query.token;
 
-        if (!token) {
-            throw new ApiValidationError("Token required", []);
-        }
-
-        const getUserRequest = {token} as GetUserRequest;
-        const {username, address, mainInstrument, genresOfInterest} = await getUserFromToken(getUserRequest);
+        console.log("User:", req.user);
+        
+        const {username, address, mainInstrument, genresOfInterest} = req.user;
 
         const getUserResponse: GetUserResponse = {username, address, mainInstrument, genresOfInterest};
         res.status(HttpStatusCode.OK).json(getUserResponse);
@@ -58,3 +55,26 @@ export const getUser = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+/*export const editProfile = async (req:IRequestUser, res: Response) => {
+    try {
+        const userId = req.user.userId;
+
+        const { username, password, address, mainInstrument, genresOfInterest } = req.body;
+
+        const updatedData: any = {}; 
+        if (username) updatedData.username = username; 
+        if (password) updatedData.password = password; 
+        if (address) updatedData.address = address; 
+        if (mainInstrument) updatedData.mainInstrument = mainInstrument; 
+        if (genresOfInterest) updatedData.genresOfInterest = genresOfInterest;
+
+        const [updatedRows] = await User.update(updatedData, {
+             where: { id: userId }, 
+             individualHooks: true 
+        });
+
+        if (updatedRows === 0) 
+            { throw new ApiValidationError("User not found or no changes made.", []); }
+    }
+}*/

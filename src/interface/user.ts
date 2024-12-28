@@ -14,10 +14,6 @@ export interface RegisterResponse {
     expiry: string;
 }
 
-export interface GetUserRequest {
-    token: string;
-}
-
 export interface GetUserResponse {
     username: string;
     address: string;

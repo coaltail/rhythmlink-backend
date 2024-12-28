@@ -48,33 +48,27 @@ export const validateRegisterRequest = [
         .withMessage('Invalid genre. Must be one of the predefined values.'),
 ];
 
-export const validateGetUserRequest = [
-    query('token')
-        .notEmpty().withMessage('Token is required.')
-]
-
 export const validateEditProfileRequest = [
     body('username')
         .isLength({ min: 6 }).withMessage('Username must be at least 6 characters long.')
-        .notEmpty().withMessage('Username is required.'),
+        .optional(),
 
     body('password')
         .isLength({ min: 10 }).withMessage('Password must be at least 10 characters long.')
-        .notEmpty().withMessage('Password is required.'),
+        .optional(),
 
     body('address')
         .isLength({ min: 10 }).withMessage('Address must be at least 10 characters long.')
-        .notEmpty().withMessage('Address is required.'),
+        .optional(),
 
     body('mainInstrument')
-        .notEmpty().withMessage('Main instrument is required.')
         .custom(value => isValidEnumValue(value, Instrument))
-        .withMessage('Invalid main instrument. Must be one of the predefined values.'),
+        .withMessage('Invalid main instrument. Must be one of the predefined values.')
+        .optional(),
         
-
     body('genresOfInterest')
         .isArray().withMessage('Please provide genres of interest in the form of an array.')
-        .notEmpty().withMessage('Genres of interest are required.')
         .custom(values => areValidEnumValues(values, MusicGenre))
-        .withMessage('Invalid genre. Must be one of the predefined values.'),
+        .withMessage('Invalid genre. Must be one of the predefined values.')
+        .optional()
 ];
