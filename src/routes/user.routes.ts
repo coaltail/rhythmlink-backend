@@ -6,5 +6,5 @@ const router = express.Router();
 
 router.post("/", validateRegisterRequest, userController.registerUser)
 router.get("/me", userController.getUser)
-//router.patch("/me", validateEditProfileRequest, userController.editProfile)
+router.patch("/", validateEditProfileRequest, userController.editProfile)
 export default router;

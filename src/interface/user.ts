@@ -21,3 +21,15 @@ export interface GetUserResponse {
     genresOfInterest: MusicGenre[];
 }
 
+export interface EditProfileRequest {
+    username?: string;
+    password?: string;
+    address?: string;
+    mainInstrument?: Instrument;
+    genresOfInterest?: MusicGenre[];
+}
+
+export interface EditProfileResponse {
+    message: string;
+}
+
