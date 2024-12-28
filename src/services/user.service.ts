@@ -3,7 +3,6 @@ import { User } from "@models/user";
 import { EditProfileRequest, RegisterRequest } from "@interface/user";
 import { TokenClaims } from "@interface/auth";
 import { signJsonWebToken } from "@services/auth.serivce";
-import { error } from "console";
 
 export const registerUserAndGenerateJwt = async (
   registerRequest: RegisterRequest
@@ -58,15 +57,12 @@ export const editUserProfile = async (
 
   const existingUser = await User.findByPk(userId);
 
-  const updatedData: any = {};
+  const updatedData: Partial<EditProfileRequest> = {};
   if (username) updatedData.username = username;
   if (password) updatedData.password = password;
   if (address) updatedData.address = address;
   if (mainInstrument) updatedData.mainInstrument = mainInstrument;
   if (genresOfInterest) updatedData.genresOfInterest = genresOfInterest;
 
-  await existingUser.update(updatedData, {
-    where: { id: userId },
-    individualHooks: true
-  });
+  await existingUser.update(updatedData);
 };

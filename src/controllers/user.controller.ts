@@ -1,6 +1,6 @@
 import logger from "@utils/logger";
 import { Request, Response } from "express";
-import { GetUserResponse, RegisterRequest, RegisterResponse, EditProfileRequest, EditProfileResponse } from "@interface/user";
+import { GetUserResponse, RegisterRequest, RegisterResponse, EditProfileRequest} from "@interface/user";
 import { registerUserAndGenerateJwt, editUserProfile} from "@services/user.service";
 import { ApiError, ApiValidationError } from "@common/errors";
 import { validationResult } from "express-validator";

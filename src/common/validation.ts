@@ -1,5 +1,5 @@
 import { Instrument, MusicGenre } from "@models/user";
-import { body, query } from "express-validator"
+import { body } from "express-validator"
 
 export const validateLoginRequest = [
     body('email')
