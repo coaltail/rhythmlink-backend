@@ -40,18 +40,14 @@ class BlobService {
      * @param blobName Name of the blob (file).
      * @param content Content of the file.
      */
-    async uploadBlob(blobName: string, content: string | Buffer): Promise<void> {
+    async uploadBlob(blobName: string, content: string | Buffer): Promise<string> {
         const containerClient = this.getContainerClient();
-        const exists = await containerClient.exists();
-        if (!exists) {
-            await containerClient.create();
-            logger.info(`Container ${AZURE_CONTAINER_NAME} created.`);
-        }
 
         const blockBlobClient = containerClient.getBlockBlobClient(blobName);
-        logger.info(`Block blob client: ${blockBlobClient}`)
         await blockBlobClient.upload(content, content.length);
-        logger.info(`Blob ${blobName} uploaded to container ${AZURE_CONTAINER_NAME}.`);
+        const blobUrl = blockBlobClient.url; // Get the blob's URL
+        logger.info(`Blob ${blobName} uploaded to container ${AZURE_CONTAINER_NAME}. URL: ${blobUrl}`);
+        return blobUrl; // Return the URL
     }
 
     /**

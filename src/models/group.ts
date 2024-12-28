@@ -31,7 +31,7 @@ Group.init(
             allowNull: false,
         },
         mainImageUrl: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             allowNull: false,
         },
         genres: {

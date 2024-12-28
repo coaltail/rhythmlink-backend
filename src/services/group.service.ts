@@ -7,8 +7,7 @@ export const createNewGroup = async (ownerId: number, name: string, genres: Arra
     try {
         const blobService = BlobService.getInstance();
         const blobName = `groups/${Date.now()}-${mainImage.originalname}`;
-        await blobService.uploadBlob(blobName, mainImage.buffer);
-        const mainImageUrl = `${process.env.AZURE_BLOB_SAS_URL}/${process.env.AZURE_CONTAINER_NAME}/${blobName}`;
+        const mainImageUrl = await blobService.uploadBlob(blobName, mainImage.buffer);
 
         const newGroup = await Group.create({
             name,
