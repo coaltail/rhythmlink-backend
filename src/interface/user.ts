@@ -13,3 +13,15 @@ export interface RegisterResponse {
     token: string;
     expiry: string;
 }
+
+export interface GetUserRequest {
+    token: string;
+}
+
+export interface GetUserResponse {
+    username: string;
+    address: string;
+    mainInstrument: Instrument;
+    genresOfInterest: MusicGenre[];
+}
+

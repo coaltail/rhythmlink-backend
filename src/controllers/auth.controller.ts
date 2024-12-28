@@ -26,6 +26,7 @@ export const loginUser = async (req: Request, res: Response) => {
                 message: error.message,
                 ...(error instanceof ApiValidationError && { errors: error.errors })
             })
+            return;
         }
         res.status(500).json({ message: "Internal server error" });
 

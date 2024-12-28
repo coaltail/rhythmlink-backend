@@ -1,7 +1,7 @@
 import logger from "@utils/logger";
 import { Request, Response } from "express";
-import { RegisterRequest, RegisterResponse } from "@interface/user";
-import { registerUserAndGenerateJwt } from "@services/user.service";
+import { GetUserRequest, GetUserResponse, RegisterRequest, RegisterResponse } from "@interface/user";
+import { registerUserAndGenerateJwt, getUserFromToken } from "@services/user.service";
 import { ApiError, ApiValidationError } from "@common/errors";
 import { validationResult } from "express-validator";
 import { HttpStatusCode } from "@common/httpStatusCodes";
@@ -26,6 +26,34 @@ export const registerUser = async (req: Request, res: Response) => {
                 message: error.message,
                 ...(error instanceof ApiValidationError && { errors: error.errors })
             })
+            return;
+        }
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+export const getUser = async (req: Request, res: Response) => {
+    try {
+        const token = req.query.token;
+
+        if (!token) {
+            throw new ApiValidationError("Token required", []);
+        }
+
+        const getUserRequest = {token} as GetUserRequest;
+        const {username, address, mainInstrument, genresOfInterest} = await getUserFromToken(getUserRequest);
+
+        const getUserResponse: GetUserResponse = {username, address, mainInstrument, genresOfInterest};
+        res.status(HttpStatusCode.OK).json(getUserResponse);
+    } catch (error: unknown) {
+
+        logger.error("Getting user error: ", error);
+        if (error instanceof ApiError) {
+            res.status(error.statusCode).json({
+                message: error.message,
+                ...(error instanceof ApiValidationError && { errors: error.errors })
+            })
+            return;
         }
         res.status(500).json({ message: "Internal server error" });
     }

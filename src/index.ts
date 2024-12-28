@@ -19,15 +19,6 @@ server.use(express.urlencoded({
   extended: true,
 }));
 
-
-if (NODE_ENV == 'dev') {
-  generateRandomUser().then((user) => {
-    console.log("Random user created:", user);
-  }).catch(err => {
-    console.error("Error creating user:", err);
-  });
-}
-
 sequelize
   .sync()
   .then(() => {

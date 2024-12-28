@@ -1,8 +1,9 @@
 import { UserAlreadyExistsError} from "@common/errors";
 import { User } from "@models/user";
-import { RegisterRequest} from "@interface/user";
+import { GetUserRequest, RegisterRequest} from "@interface/user";
 import { TokenClaims } from "@interface/auth";
 import {signJsonWebToken} from "@services/auth.serivce"
+import jwt, {JwtPayload} from 'jsonwebtoken';
 
 export const registerUserAndGenerateJwt = async (registerRequest: RegisterRequest) => {
     const {email, username, password, address, mainInstrument, genresOfInterest} = registerRequest;
@@ -36,3 +37,34 @@ export const registerUserAndGenerateJwt = async (registerRequest: RegisterReques
 
     return { token, expiry };
 }
+   
+
+export const getUserFromToken = async (getUserRequest: GetUserRequest) => {
+    const { token } = getUserRequest;
+
+    const userClaims = decodeToken(token);
+
+    if (!userClaims) {
+        throw new Error('Invalid token');
+    }
+
+    if (typeof userClaims === 'object') {
+        return {
+            username: userClaims.username,
+            address: userClaims.address,
+            mainInstrument: userClaims.mainInstrument,
+            genresOfInterest: userClaims.genresOfInterest,
+        };
+    } else {
+        throw new Error('Invalid token payload');
+    }
+};
+
+
+export const decodeToken = (token: string): JwtPayload | null => { 
+    try { const decoded = jwt.verify(token, process.env.JWT_SECRET); 
+        return decoded as JwtPayload; 
+    } catch (error) { 
+        console.error('Error decoding token:', error); return null; 
+    } 
+};
