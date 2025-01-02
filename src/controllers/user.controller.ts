@@ -14,6 +14,7 @@ import { ApiError, ApiValidationError } from "@common/errors";
 import { validationResult } from "express-validator";
 import { HttpStatusCode } from "@common/httpStatusCodes";
 import { IRequestUser } from "@interface/auth";
+import { MusicGenre } from "@models/user";
 export const registerUser = async (req: Request, res: Response) => {
   try {
     const errors = validationResult(req);
@@ -42,14 +43,23 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const getUser = async (req: IRequestUser, res: Response) => {
   try {
-    const { username, address, mainInstrument, genresOfInterest } = req.user;
+    const {
+      username,
+      address,
+      mainInstrument,
+      genresOfInterest,
+      mainImageUrl
+    } = req.user;
 
     const getUserResponse: GetUserResponse = {
       username,
       address,
       mainInstrument,
-      genresOfInterest
+      genresOfInterest,
+      mainImageUrl
     };
+    console.log("Response:", getUserResponse);
+
     res.status(HttpStatusCode.OK).json(getUserResponse);
   } catch (error: unknown) {
     logger.error("Getting user error: ", error);
@@ -72,17 +82,39 @@ export const editProfile = async (req: IRequestUser, res: Response) => {
       throw new ApiValidationError("Validation failed", errors.array());
     }
 
+    //const { userData } = (req.body.nameValuePairs || req.body)
+    const userData = req.body.userData;
+    const mainImage = req.file;
+    const data: EditProfileRequest = JSON.parse(userData);
+
+    if (mainImage) {
+      const allowedImageTypes = ["image/jpeg", "image/png", "image/jpg"];
+      if (!allowedImageTypes.includes(mainImage.mimetype)) {
+        throw new ApiValidationError(
+          "Invalid image type. Only JPG, PNG, and JPEG are allowed.",
+          []
+        );
+      }
+    }
+
     const userId = req.user.userId;
 
-    const editProfileRequest: EditProfileRequest = {
-      ...(req.body.nameValuePairs || req.body)
-    };
+    const genreArray: Array<MusicGenre> = data.genresOfInterest;
 
-    await editUserProfile(editProfileRequest, userId);
+    const { token, expiry } = await editUserProfile(
+      userId,
+      data.username,
+      data.password,
+      data.address,
+      data.mainInstrument,
+      genreArray,
+      mainImage
+    );
 
-    res.status(HttpStatusCode.OK).json({ message: "User updated" });
+    res.status(HttpStatusCode.OK).json({ token, expiry });
   } catch (error: unknown) {
-    logger.error("Getting user error: ", error);
+    logger.error("Editing user error: ", error);
+    console.error(error);
     if (error instanceof ApiError) {
       res.status(error.statusCode).json({
         message: error.message,

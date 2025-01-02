@@ -19,6 +19,7 @@ export interface TokenClaims {
     genresOfInterest: MusicGenre[];
     createdAt: Date;
     updatedAt: Date;
+    mainImageUrl?: string;
 }
 
 export interface IRequestUser extends Request {

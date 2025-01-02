@@ -12,7 +12,7 @@ export enum MusicGenre {
   BLUES = "BLUES",
   COUNTRY = "COUNTRY",
   REGGAE = "REGGAE",
-  METAL = "METAL",
+  METAL = "METAL"
 }
 
 export enum Instrument {
@@ -25,7 +25,7 @@ export enum Instrument {
   FLUTE = "FLUTE",
   CELLO = "CELLO",
   TRUMPET = "TRUMPET",
-  VOCALS = "VOCALS",
+  VOCALS = "VOCALS"
 }
 
 export class User extends Model {
@@ -35,9 +35,10 @@ export class User extends Model {
   public password!: string;
   public address!: string;
   public mainInstrument!: Instrument;
-  public genresOfInterest!: MusicGenre[];  // This should be handled as a JSON or a string column in MySQL
+  public genresOfInterest!: MusicGenre[]; // This should be handled as a JSON or a string column in MySQL
   public createdAt!: Date;
   public updatedAt!: Date;
+  public mainImageUrl?: string;
 }
 
 const instruments = Object.values(Instrument);
@@ -47,19 +48,19 @@ User.init(
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
-      primaryKey: true,
+      primaryKey: true
     },
     username: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     email: {
       type: DataTypes.STRING,
       allowNull: false,
       unique: true,
       validate: {
-        isEmail: true,
-      },
+        isEmail: true
+      }
     },
     password: {
       type: DataTypes.STRING,
@@ -67,30 +68,34 @@ User.init(
       validate: {
         len: {
           args: [10, 45],
-          msg: "Password must be at least 10 characters long.",
+          msg: "Password must be at least 10 characters long."
         }
       }
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: false
     },
     mainInstrument: {
       type: DataTypes.ENUM(...instruments),
-      allowNull: false,
+      allowNull: false
     },
     genresOfInterest: {
       type: DataTypes.JSON,
-      allowNull: false,
+      allowNull: false
     },
     createdAt: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      defaultValue: DataTypes.NOW
     },
     updatedAt: {
       type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
+      defaultValue: DataTypes.NOW
     },
+    mainImageUrl: {
+      type: DataTypes.TEXT,
+      allowNull: true
+    }
   },
   {
     sequelize,
@@ -101,7 +106,7 @@ User.init(
         if (user.password) {
           user.password = await bcrypt.hash(user.password, 15);
         }
-      },
-    },
+      }
+    }
   }
 );
