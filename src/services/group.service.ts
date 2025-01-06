@@ -1,4 +1,5 @@
 import BlobService from "@common/blobService";
+import sequelize from 'sequelize'
 import { GroupCreateResponse, GroupGetResponse } from "@interface/group";
 import { Group } from "@models/group";
 import { MusicGenre } from "@models/user";
@@ -56,3 +57,38 @@ export const getGroup = async (id: number): Promise<GroupGetResponse> => {
         throw error;
     }
 }
+
+export const searchGroup = async (pageSize: string = "20", pageNumber: string = "1", name?: string, genres?: string[]) => {
+    try {
+        const limit = parseInt(pageSize);
+        const offset = (parseInt(pageNumber) - 1) * limit;
+
+        const where: any = {};
+
+        if (name) {
+            where.name = {
+                [sequelize.Op.like]: `%${name}%`,
+            };
+        }
+        if (genres && genres.length > 0) {
+            const cleanedGenres = genres.map((genre: string) => genre.replace('', ''));
+            console.log("genres: ", cleanedGenres)
+            logger.info("cleaned genres: ", cleanedGenres);
+            where.genres = {
+                [sequelize.Op.in]: cleanedGenres,
+            };
+        }
+
+        const groups = await Group.findAll({
+            where,
+            limit,
+            offset,
+        });
+
+        return groups;
+    } catch (err) {
+        logger.error("Error occurred during group search:", err);
+        throw err;
+    }
+};
+
