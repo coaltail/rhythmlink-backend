@@ -1,5 +1,5 @@
 import { GroupCreateRequest, GroupCreateResponse } from "@interface/group";
-import { Response } from "express";
+import { Request, Response } from "express";
 import logger from "@utils/logger";
 import { validationResult } from "express-validator";
 import * as userService from "@services/user.service"
@@ -47,3 +47,50 @@ export const createNewGroup = async (req: IRequestUser, res: Response<GroupCreat
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const searchGroups = async (req: Request, res: Response) => {
+    try {
+        // Validate query parameters
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            throw new ApiValidationError("Validation failed", errors.array());
+        }
+
+        const { name, genres, pageSize, pageNumber } = req.query;
+
+        // If genres is provided, parse it correctly into an array
+        let genresArray: string[] = [];
+        if (genres) {
+            try {
+                genresArray = JSON.parse(genres as string);
+            } catch (error: unknown) {
+                logger.error(error);
+                throw new ApiValidationError("Genres parameter must be a valid JSON array", []);
+            }
+        }
+
+        // Default pageSize and pageNumber if not provided
+        const pageSizeInt = pageSize ? parseInt(pageSize as string) : 20;
+        const pageNumberInt = pageNumber ? parseInt(pageNumber as string) : 1;
+
+        // Call the service to search groups
+        const groups = await groupService.searchGroup(
+            pageSizeInt.toString(),
+            pageNumberInt.toString(),
+            name as string | undefined,
+            genresArray as MusicGenre[]
+        );
+
+        res.status(200).json(groups);
+    } catch (error: unknown) {
+        logger.error("Search groups error: ", error);
+        if (error instanceof ApiError) {
+            res.status(error.statusCode).json({
+                message: error.message,
+                ...(error instanceof ApiValidationError && { errors: error.errors })
+            });
+            return;
+        }
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
