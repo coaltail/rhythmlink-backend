@@ -58,7 +58,6 @@ export const getUser = async (req: IRequestUser, res: Response) => {
       genresOfInterest,
       mainImageUrl
     };
-    console.log("Response:", getUserResponse);
 
     res.status(HttpStatusCode.OK).json(getUserResponse);
   } catch (error: unknown) {
