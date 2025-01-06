@@ -1,4 +1,4 @@
-import { GroupCreateRequest, GroupCreateResponse } from "@interface/group";
+import { GroupCreateRequest, GroupCreateResponse, GroupGetResponse } from "@interface/group";
 import { Response } from "express";
 import logger from "@utils/logger";
 import { validationResult } from "express-validator";
@@ -7,6 +7,7 @@ import { ApiError, ApiValidationError, UserNotFoundError } from "@common/errors"
 import { MusicGenre } from "@models/user";
 import * as groupService from "@services/group.service"
 import { IRequestUser } from "@interface/auth";
+import { HttpStatusCode } from "@common/httpStatusCodes";
 
 export const createNewGroup = async (req: IRequestUser, res: Response<GroupCreateResponse | { message: string }>) => {
     try {
@@ -47,3 +48,30 @@ export const createNewGroup = async (req: IRequestUser, res: Response<GroupCreat
         res.status(500).json({ message: "Internal server error" });
     }
 }
+
+export const getGroup = async (req: IRequestUser, res: Response<GroupGetResponse | { message: string }>) => {
+    try {
+
+        const id = parseInt(req.params.id, 10);
+
+        if (isNaN(id)) {
+          res.status(HttpStatusCode.BAD_REQUEST).json({ message: "Invalid group ID." });
+          return;
+        }
+  
+      const getGroupResponse = await groupService.getGroup(id);
+  
+      res.status(HttpStatusCode.OK).json(getGroupResponse);
+
+    } catch (error: unknown) {
+      logger.error("Getting group error: ", error);
+      if (error instanceof ApiError) {
+        res.status(error.statusCode).json({
+          message: error.message,
+          ...(error instanceof ApiValidationError && { errors: error.errors })
+        });
+        return;
+      }
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };

@@ -17,3 +17,13 @@ export interface GroupCreateResponse {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface GroupGetRequest {
+    id: number;
+}
+
+export interface GroupGetResponse {
+    name: string;
+    mainImageUrl: string;
+    genres: MusicGenre[];
+}

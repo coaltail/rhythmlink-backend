@@ -9,5 +9,6 @@ const upload = multer({
 })
 
 router.post("/", upload.single("mainImage"), groupController.createNewGroup)
+router.get("/find/:id", groupController.getGroup);
 
 export default router;
