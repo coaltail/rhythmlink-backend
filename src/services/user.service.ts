@@ -2,7 +2,7 @@ import BlobService from "@common/blobService";
 import { UserAlreadyExistsError } from "@common/errors";
 import { Instrument, MusicGenre, User } from "@models/user";
 import { EditProfileRequest, RegisterRequest } from "@interface/user";
-import { IRequestUser, TokenClaims } from "@interface/auth";
+import { TokenClaims } from "@interface/auth";
 import { signJsonWebToken } from "@services/auth.service";
 
 export const registerUserAndGenerateJwt = async (
@@ -64,7 +64,7 @@ export const editUserProfile = async (
   mainImage?: Express.Multer.File
 ) => {
 
-  var mainImageUrl: string;
+  let mainImageUrl: string;
 
   const existingUser = await User.findByPk(userId);
 
