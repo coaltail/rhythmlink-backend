@@ -1,7 +1,8 @@
+import BlobService from "@common/blobService";
 import { UserAlreadyExistsError } from "@common/errors";
-import { User } from "@models/user";
+import { Instrument, MusicGenre, User } from "@models/user";
 import { EditProfileRequest, RegisterRequest } from "@interface/user";
-import { TokenClaims } from "@interface/auth";
+import { IRequestUser, TokenClaims } from "@interface/auth";
 import { signJsonWebToken } from "@services/auth.service";
 
 export const registerUserAndGenerateJwt = async (
@@ -49,25 +50,57 @@ export const registerUserAndGenerateJwt = async (
 };
 
 export const findUserById = async (userId: number) => {
-    const user = await User.findByPk(userId)
-    return user;
-}
+  const user = await User.findByPk(userId);
+  return user;
+};
 
 export const editUserProfile = async (
-  editProfileRequest: EditProfileRequest,
-  userId: number
+  userId: number,
+  username?: string,
+  password?: string,
+  address?: string,
+  mainInstrument?: Instrument,
+  genres?: Array<MusicGenre>,
+  mainImage?: Express.Multer.File
 ) => {
-  const { username, password, address, mainInstrument, genresOfInterest } =
-    editProfileRequest;
+
+  var mainImageUrl: string;
 
   const existingUser = await User.findByPk(userId);
 
+  if(mainImage)
+  {
+    const blobService = BlobService.getInstance();
+    const blobName = `users/${Date.now()}-${mainImage.originalname}`;
+
+    mainImageUrl = await blobService.uploadBlob(blobName, mainImage.buffer);
+
+    existingUser.mainImageUrl = mainImageUrl
+
+  }
+  
   const updatedData: Partial<EditProfileRequest> = {};
   if (username) updatedData.username = username;
   if (password) updatedData.password = password;
   if (address) updatedData.address = address;
   if (mainInstrument) updatedData.mainInstrument = mainInstrument;
-  if (genresOfInterest) updatedData.genresOfInterest = genresOfInterest;
+  if (genres) updatedData.genresOfInterest = genres
+
+  const tokenClaims: TokenClaims = {
+    userId: userId,
+    username: username || existingUser.username,
+    address: address || existingUser.address,
+    mainInstrument: mainInstrument || existingUser.mainInstrument,
+    genresOfInterest: genres || existingUser.genresOfInterest,
+    createdAt: existingUser.createdAt,
+    updatedAt: new Date(),
+    mainImageUrl: mainImageUrl || existingUser.mainImageUrl
+  };
+
+  const token = signJsonWebToken(tokenClaims);
+  const expiry = new Date(Date.now() + 3600 * 1000 * 24).toISOString();
 
   await existingUser.update(updatedData);
+
+  return { token, expiry };
 };
