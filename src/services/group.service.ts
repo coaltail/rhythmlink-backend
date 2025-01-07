@@ -1,6 +1,6 @@
 import BlobService from "@common/blobService";
 import sequelize from 'sequelize'
-import { GroupCreateResponse } from "@interface/group";
+import { GroupCreateResponse, GroupGetResponse } from "@interface/group";
 import { Group } from "@models/group";
 import { MusicGenre } from "@models/user";
 import logger from "@utils/logger";
@@ -34,6 +34,30 @@ export const createNewGroup = async (ownerId: number, name: string, genres: Arra
     }
 
 }
+
+export const getGroup = async (id: number): Promise<GroupGetResponse> => {
+    try {
+
+        const group = await Group.findOne({where: {id} });
+
+        if (!group){
+            throw new Error(`Group with id ${id} not found.`);
+        }
+
+        const groupData: GroupGetResponse = {
+            name: group.name,
+            mainImageUrl: group.mainImageUrl,
+            genres: group.genres,
+        };
+
+        return groupData;
+
+    } catch (error: unknown) {
+        logger.error("Error occured during retrieving of group.")
+        throw error;
+    }
+}
+
 export const searchGroup = async (pageSize: string = "20", pageNumber: string = "1", name?: string, genres?: string[]) => {
     try {
         const limit = parseInt(pageSize);
@@ -67,3 +91,4 @@ export const searchGroup = async (pageSize: string = "20", pageNumber: string = 
         throw err;
     }
 };
+
