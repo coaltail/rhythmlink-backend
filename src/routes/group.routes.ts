@@ -1,7 +1,7 @@
 import express from "express";
 import * as groupController from "@controllers/group.controller";
 import multer from "multer";
-import { group } from "console";
+
 const router = express.Router();
 const FIVE_MB = 5 * 1024 * 1024;
 const upload = multer({

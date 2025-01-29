@@ -12,7 +12,6 @@ import { Group } from "@models/group";
 import { MusicGenre } from "@models/user";
 import logger from "@utils/logger";
 import { GroupRequest } from "@models/groupRequest";
-import { User } from "@models/user";
 import { GroupMembers } from "@models/groupMembers";
 
 export const createNewGroup = async (
