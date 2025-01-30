@@ -138,15 +138,16 @@ export const getGroupRequests = async (
 ) => {
   try {
     const id = parseInt(req.params.id, 10);
+    const ownerId = parseInt(req.params.ownerId, 10);
 
-    if (isNaN(id)) {
+    if (isNaN(id || ownerId)) {
       res
         .status(HttpStatusCode.BAD_REQUEST)
-        .json({ message: "Invalid group ID." });
+        .json({ message: "Invalid group or owner ID." });
       return;
     }
 
-    const getGroupRequestsResponse = await groupService.getGroupRequests(id);
+    const getGroupRequestsResponse = await groupService.getGroupRequests(id, ownerId);
 
     res.status(HttpStatusCode.OK).json(getGroupRequestsResponse);
   } catch (error: unknown) {

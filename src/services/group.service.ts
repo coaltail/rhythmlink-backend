@@ -111,9 +111,23 @@ export const getGroupsByUser = async (
 };
 
 export const getGroupRequests = async (
-  id: number
+  id: number,
+  ownerId: number
 ): Promise<GroupGetRequestsResponse> => {
   try {
+    const owner = await Group.findOne({
+      where: {
+        ownerId: ownerId,
+        id: id
+      }
+    });
+
+    if (!owner) {
+      throw new Error(
+        `User with id ${ownerId} is not the owner of group with id ${id}`
+      );
+    }
+
     const groupRequests = await GroupRequest.findAll({
       where: { group_id: id }
     });
