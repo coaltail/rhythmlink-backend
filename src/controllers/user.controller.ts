@@ -50,7 +50,6 @@ export const getUser = async (req: IRequestUser, res: Response) => {
       mainInstrument,
       genresOfInterest,
       mainImageUrl,
-      userId
     } = req.user;
 
     const getUserResponse: GetUserResponse = {
@@ -85,7 +84,6 @@ export const editProfile = async (req: IRequestUser, res: Response) => {
       throw new ApiValidationError("Validation failed", errors.array());
     }
 
-    //const { userData } = (req.body.nameValuePairs || req.body)
     const userData = req.body.userData;
     const mainImage = req.file;
     const data: EditProfileRequest = JSON.parse(userData);
