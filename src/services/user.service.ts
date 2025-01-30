@@ -63,28 +63,25 @@ export const editUserProfile = async (
   genres?: Array<MusicGenre>,
   mainImage?: Express.Multer.File
 ) => {
-
   let mainImageUrl: string;
 
   const existingUser = await User.findByPk(userId);
 
-  if(mainImage)
-  {
+  if (mainImage) {
     const blobService = BlobService.getInstance();
     const blobName = `users/${Date.now()}-${mainImage.originalname}`;
 
     mainImageUrl = await blobService.uploadBlob(blobName, mainImage.buffer);
 
-    existingUser.mainImageUrl = mainImageUrl
-
+    existingUser.mainImageUrl = mainImageUrl;
   }
-  
+
   const updatedData: Partial<EditProfileRequest> = {};
   if (username) updatedData.username = username;
   if (password) updatedData.password = password;
   if (address) updatedData.address = address;
   if (mainInstrument) updatedData.mainInstrument = mainInstrument;
-  if (genres) updatedData.genresOfInterest = genres
+  if (genres) updatedData.genresOfInterest = genres;
 
   const tokenClaims: TokenClaims = {
     userId: userId,
