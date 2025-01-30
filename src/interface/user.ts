@@ -21,6 +21,7 @@ export interface GetUserResponse {
   mainInstrument: Instrument;
   genresOfInterest: MusicGenre[];
   mainImageUrl?: string;
+  id: number;
 }
 
 export interface EditProfileRequest {

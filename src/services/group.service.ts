@@ -157,7 +157,7 @@ export const searchGroup = async (
     const limit = parseInt(pageSize);
     const offset = (parseInt(pageNumber) - 1) * limit;
 
-    const where: any = {};
+    const where: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
 
     if (name) {
       where.name = {
@@ -336,6 +336,24 @@ export const denyJoinRequest = async (
     );
   } catch (error: unknown) {
     logger.error("Error occurred during denying request: ", error);
+    throw error;
+  }
+};
+
+export const getRecommendations = async (userId: number) => {
+  try {
+    const response = await fetch(`http://recommendation-service:5000/recommend/${userId}`, {
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to fetch recommendations: ${response.statusText}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    logger.warn("Fetching recommendations failed");
     throw error;
   }
 };
