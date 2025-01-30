@@ -213,36 +213,36 @@ export const searchGroups = async (req: Request, res: Response) => {
   }
 };
 
-export const trainModel = async (_: Request, _unused: Response) => {
-    try {
-        const response = await fetch("http://localhost:5000/train", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            }
-        });
-        if (!response.ok) {
-            throw new Error(`Failed to train model: ${response.statusText}`);
-        }
-        const data = await response.json();
-        console.log("Model trained:", data);
-    } catch (error: unknown) {
-        console.error("Error training model: ", error);
+export const trainModel = async (_: Request, _unused: Response) => { // eslint-disable-line @typescript-eslint/no-unused-vars
+  try {
+    const response = await fetch("http://localhost:5000/train", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      }
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to train model: ${response.statusText}`);
     }
+    const data = await response.json();
+    console.log("Model trained:", data);
+  } catch (error: unknown) {
+    console.error("Error training model: ", error);
+  }
 };
 
 export const getRecommendations = async (req: IRequestUser, res: Response) => {
-    try {
-        const userId = req.user.userId
-        const response = await groupService.getRecommendations(userId);
-        console.log("Recommendations:", response);
-        res.status(200).json(response);
-    } catch (error) {
-        console.error("Error fetching recommendations:", error);
-        res.status(500).json(error);
-        return;
-    }
+  try {
+    const userId = req.user.userId
+    const response = await groupService.getRecommendations(userId);
+    console.log("Recommendations:", response);
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching recommendations:", error);
+    res.status(500).json(error);
+    return;
+  }
 };
 export const joinGroup = async (req: Request, res: Response) => {
   try {
