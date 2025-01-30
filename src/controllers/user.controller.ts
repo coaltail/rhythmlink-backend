@@ -48,7 +48,8 @@ export const getUser = async (req: IRequestUser, res: Response) => {
       address,
       mainInstrument,
       genresOfInterest,
-      mainImageUrl
+      mainImageUrl,
+      userId
     } = req.user;
 
     const getUserResponse: GetUserResponse = {
@@ -56,7 +57,8 @@ export const getUser = async (req: IRequestUser, res: Response) => {
       address,
       mainInstrument,
       genresOfInterest,
-      mainImageUrl
+      mainImageUrl,
+      id: userId
     };
 
     res.status(HttpStatusCode.OK).json(getUserResponse);

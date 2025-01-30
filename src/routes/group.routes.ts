@@ -11,5 +11,7 @@ const upload = multer({
 router.post("/", upload.single("mainImage"), groupController.createNewGroup)
 router.get("/find/:id", groupController.getGroup);
 router.get("/", groupController.searchGroups);
+router.get("/recommend", groupController.getRecommendations);
+router.get("/train", groupController.trainModel);
 
 export default router;

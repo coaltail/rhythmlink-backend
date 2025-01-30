@@ -41,6 +41,25 @@ services:
       done;
       npm run dev"
 
+  recommendation-service:
+    build:
+      context: ./ml_model # Assuming the Python app is in the `ml_model` folder
+    container_name: recommendation-service
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: user
+      DB_PASSWORD: userpassword
+      DB_NAME: rhythmlink_db
+    depends_on:
+      - mysql
+    ports:
+      - "5000:5000"
+    networks:
+      - app-network
+    volumes:
+      - ./ml_model:/app # Mount the Python application files
+
 networks:
   app-network:
     driver: bridge

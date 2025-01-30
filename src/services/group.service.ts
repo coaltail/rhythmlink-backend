@@ -38,9 +38,9 @@ export const createNewGroup = async (ownerId: number, name: string, genres: Arra
 export const getGroup = async (id: number): Promise<GroupGetResponse> => {
     try {
 
-        const group = await Group.findOne({where: {id} });
+        const group = await Group.findOne({ where: { id } });
 
-        if (!group){
+        if (!group) {
             throw new Error(`Group with id ${id} not found.`);
         }
 
@@ -92,3 +92,20 @@ export const searchGroup = async (pageSize: string = "20", pageNumber: string = 
     }
 };
 
+export const getRecommendations = async (userId: number) => {
+    try {
+        const response = await fetch(`http://recommendation-service:5000/recommend/${userId}`, {
+            headers: {
+                "Accept": "application/json"
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`Failed to fetch recommendations: ${response.statusText}`);
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        logger.warn("Fetching recommendations failed");
+        throw error;
+    }
+};
