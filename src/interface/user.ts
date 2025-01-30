@@ -15,6 +15,7 @@ export interface RegisterResponse {
 }
 
 export interface GetUserResponse {
+  userId: number;
   username: string;
   address: string;
   mainInstrument: Instrument;

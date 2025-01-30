@@ -44,6 +44,7 @@ export const registerUser = async (req: Request, res: Response) => {
 export const getUser = async (req: IRequestUser, res: Response) => {
   try {
     const {
+      userId,
       username,
       address,
       mainInstrument,
@@ -52,6 +53,7 @@ export const getUser = async (req: IRequestUser, res: Response) => {
     } = req.user;
 
     const getUserResponse: GetUserResponse = {
+      userId,
       username,
       address,
       mainInstrument,
