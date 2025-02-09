@@ -1,6 +1,4 @@
 import { MusicGenre } from "@models/user";
-import { Group } from "@models/group";
-import { GroupRequest } from "@models/groupRequest";
 
 export interface GroupCreateRequest {
   name: string;

@@ -16,7 +16,6 @@ import { MusicGenre } from "@models/user";
 import * as groupService from "@services/group.service";
 import { IRequestUser } from "@interface/auth";
 import { HttpStatusCode } from "@common/httpStatusCodes";
-import { group } from "console";
 
 export const createNewGroup = async (
   req: IRequestUser,
