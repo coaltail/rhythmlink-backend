@@ -3,8 +3,6 @@ import sequelize from "sequelize";
 import {
   GroupUpdateRequestResponse,
   GroupCreateResponse,
-  GroupGetByUserResponse,
-  GroupGetRequestsResponse,
   GroupGetResponse,
   GroupJoinResponse
 } from "@interface/group";
@@ -79,9 +77,7 @@ export const getGroup = async (id: number): Promise<GroupGetResponse> => {
   }
 };
 
-export const getGroupsByUser = async (
-  id: number
-): Promise<GroupGetByUserResponse> => {
+export const getGroupsByUser = async (id: number) => {
   try {
     const groupMembers = await GroupMembers.findAll({
       where: { userId: id }
@@ -103,17 +99,14 @@ export const getGroupsByUser = async (
       }
     }
 
-    return { groups: userGroups };
+    return userGroups;
   } catch (error: unknown) {
     logger.error("Error occurred during retrieving of user groups.");
     throw error;
   }
 };
 
-export const getGroupRequests = async (
-  id: number,
-  ownerId: number
-): Promise<GroupGetRequestsResponse> => {
+export const getGroupRequests = async (id: number, ownerId: number) => {
   try {
     const owner = await Group.findOne({
       where: {
@@ -136,11 +129,7 @@ export const getGroupRequests = async (
       throw new Error(`No requests found for group with ID ${id}.`);
     }
 
-    const requests: GroupGetRequestsResponse = {
-      requests: groupRequests
-    };
-
-    return requests;
+    return groupRequests;
   } catch (error: unknown) {
     logger.error("Error occured during retrieving of groups requests.");
     throw error;

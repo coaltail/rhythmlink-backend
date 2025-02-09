@@ -1,8 +1,6 @@
 import {
   GroupCreateRequest,
   GroupCreateResponse,
-  GroupGetByUserResponse,
-  GroupGetRequestsResponse,
   GroupGetResponse
 } from "@interface/group";
 import { Request, Response } from "express";
@@ -102,10 +100,7 @@ export const getGroup = async (
   }
 };
 
-export const getGroupsByUser = async (
-  req: IRequestUser,
-  res: Response<GroupGetByUserResponse | { message: string }>
-) => {
+export const getGroupsByUser = async (req: IRequestUser, res: Response) => {
   try {
     const id = parseInt(req.params.id, 10);
 
@@ -116,9 +111,9 @@ export const getGroupsByUser = async (
       return;
     }
 
-    const getGroupsByUserResponse = await groupService.getGroupsByUser(id);
+    const groups = await groupService.getGroupsByUser(id);
 
-    res.status(HttpStatusCode.OK).json(getGroupsByUserResponse);
+    res.status(HttpStatusCode.OK).json(groups);
   } catch (error: unknown) {
     logger.error("Getting user groups error: ", error);
     if (error instanceof ApiError) {
@@ -132,10 +127,7 @@ export const getGroupsByUser = async (
   }
 };
 
-export const getGroupRequests = async (
-  req: IRequestUser,
-  res: Response<GroupGetRequestsResponse | { message: string }>
-) => {
+export const getGroupRequests = async (req: IRequestUser, res: Response) => {
   try {
     const id = parseInt(req.params.id, 10);
     const ownerId = parseInt(req.params.ownerId, 10);
@@ -147,9 +139,9 @@ export const getGroupRequests = async (
       return;
     }
 
-    const getGroupRequestsResponse = await groupService.getGroupRequests(id, ownerId);
+    const groupRequests = await groupService.getGroupRequests(id, ownerId);
 
-    res.status(HttpStatusCode.OK).json(getGroupRequestsResponse);
+    res.status(HttpStatusCode.OK).json(groupRequests);
   } catch (error: unknown) {
     logger.error("Getting group error: ", error);
     if (error instanceof ApiError) {

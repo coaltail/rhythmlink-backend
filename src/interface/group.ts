@@ -1,6 +1,4 @@
 import { MusicGenre } from "@models/user";
-import { Group } from "@models/group";
-import { GroupRequest } from "@models/groupRequest";
 
 export interface GroupCreateRequest {
   name: string;
@@ -44,16 +42,8 @@ export interface GroupGetByUserRequest {
   id: number;
 }
 
-export interface GroupGetByUserResponse {
-  groups: Group[];
-}
-
 export interface GroupGetRequestsRequest {
   id: number;
-}
-
-export interface GroupGetRequestsResponse {
-  requests: GroupRequest[];
 }
 
 export interface GroupUpdateRequestResponse {
@@ -61,4 +51,3 @@ export interface GroupUpdateRequestResponse {
   user_id?: number;
   role?: string;
 }
-
