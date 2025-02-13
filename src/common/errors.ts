@@ -39,3 +39,15 @@ export class UserAlreadyExistsError extends ApiError {
         super(message, HttpStatusCode.BAD_REQUEST)
     }
 }
+
+export class ForbiddenError extends ApiError {
+    constructor(message: string = 'Forbidden') {
+        super(message, HttpStatusCode.FORBIDDEN)
+    }
+}
+
+export class NotFoundError extends ApiError {
+    constructor(message: string = 'Not found') {
+        super(message, HttpStatusCode.NOT_FOUND)
+    }
+}
