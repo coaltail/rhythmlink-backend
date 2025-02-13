@@ -22,6 +22,7 @@
             "@routes/*": ["src/routes/*"],
             "@interface/*": ["src/interface/*"],
             "@common/*": ["src/common/*"],
+            "@middlewares/*": ["src/middlewares/*"]
         }
     },
     "include": [
