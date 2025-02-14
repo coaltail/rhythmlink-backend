@@ -30,6 +30,7 @@ export interface EditProfileRequest {
   address?: string;
   mainInstrument?: Instrument;
   genresOfInterest?: MusicGenre[];
+  mainImageUrl?: string;
 }
 
 export interface EditProfileResponse {

@@ -66,6 +66,11 @@ export const editUserProfile = async (
   let mainImageUrl: string;
 
   const existingUser = await User.findByPk(userId);
+  if (!existingUser) {
+    throw new Error("User not found");
+  }
+
+  const updatedData: Partial<EditProfileRequest> = {};
 
   if (mainImage) {
     const blobService = BlobService.getInstance();
@@ -73,15 +78,16 @@ export const editUserProfile = async (
 
     mainImageUrl = await blobService.uploadBlob(blobName, mainImage.buffer);
 
-    existingUser.mainImageUrl = mainImageUrl;
+    updatedData.mainImageUrl = mainImageUrl;
   }
 
-  const updatedData: Partial<EditProfileRequest> = {};
   if (username) updatedData.username = username;
   if (password) updatedData.password = password;
   if (address) updatedData.address = address;
   if (mainInstrument) updatedData.mainInstrument = mainInstrument;
   if (genres) updatedData.genresOfInterest = genres;
+
+  await existingUser.update(updatedData);
 
   const tokenClaims: TokenClaims = {
     userId: userId,
@@ -91,13 +97,13 @@ export const editUserProfile = async (
     genresOfInterest: genres || existingUser.genresOfInterest,
     createdAt: existingUser.createdAt,
     updatedAt: new Date(),
-    mainImageUrl: mainImageUrl || existingUser.mainImageUrl
+    mainImageUrl: updatedData.mainImageUrl || existingUser.mainImageUrl,
   };
+
+  console.log("New Token Claims:", tokenClaims);
 
   const token = signJsonWebToken(tokenClaims);
   const expiry = new Date(Date.now() + 3600 * 1000 * 24).toISOString();
-
-  await existingUser.update(updatedData);
 
   return { token, expiry };
 };
